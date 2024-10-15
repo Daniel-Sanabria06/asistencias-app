@@ -2,8 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:app_flutter/main.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart'; // Importa Lottie
-import 'package:app_flutter/components/attendeesPage.dart'; // Importa la página de asistentes
+import 'package:app_flutter/components/attendeesPage.dart';
 
 class ListaEventos extends StatefulWidget {
   const ListaEventos({super.key});
@@ -19,8 +18,7 @@ class ListaEventosState extends State<ListaEventos>
   bool _isAsc = true;
   bool _isLoading = false;
   late AnimationController _controller;
-  bool _isButtonVisible = true; // Mostrar botón flotante
-  bool _isDisposing = false;
+  bool _isButtonVisible = true;
 
   @override
   void initState() {
@@ -30,7 +28,7 @@ class ListaEventosState extends State<ListaEventos>
       vsync: this,
     );
 
-    _fetchEvents(); // Llamar a _fetchEvents() al iniciar la pantalla
+    _fetchEvents();
   }
 
   // Función para obtener los eventos desde la API
@@ -43,7 +41,7 @@ class ListaEventosState extends State<ListaEventos>
 
       if (response.statusCode == 200) {
         setState(() {
-          _events = response.data; // Asignamos los datos recibidos a la lista
+          _events = response.data;
         });
       } else {
         throw Exception('Error al cargar eventos');
@@ -82,21 +80,20 @@ class ListaEventosState extends State<ListaEventos>
 
                 if (newEventName.isNotEmpty) {
                   setState(() {
-                    _isLoading = true; // Activar la carga
+                    _isLoading = true; 
                   });
 
-                  // Petición para crear el evento
                   Response response =
                       await dio.post('$apiUrl/eventos/$newEventName');
 
                   setState(() {
-                    _isLoading = false; // Desactivar la carga
+                    _isLoading = false; 
                   });
 
-                  Navigator.of(context).pop(); // Cerrar el diálogo
+                  Navigator.of(context).pop(); 
 
                   if (response.statusCode == 201) {
-                    await _fetchEvents(); // Volver a cargar los eventos
+                    await _fetchEvents(); 
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('Evento creado correctamente.'),
@@ -124,7 +121,7 @@ class ListaEventosState extends State<ListaEventos>
       if (response.statusCode == 200) {
         setState(() {
           _events.removeWhere((evento) =>
-              evento['id'] == id); // Eliminamos el evento de la lista
+              evento['id'] == id); 
         });
       } else {
         throw Exception('Error al eliminar el evento');
@@ -157,8 +154,8 @@ class ListaEventosState extends State<ListaEventos>
           actions: [
             TextButton(
               onPressed: () async {
-                await _fetchEvents(); // Volver a cargar los eventos
-                Navigator.of(context).pop(); // Cerrar el dialog
+                await _fetchEvents(); 
+                Navigator.of(context).pop(); 
               },
               child: const Text('Cancelar'),
             ),
@@ -167,9 +164,9 @@ class ListaEventosState extends State<ListaEventos>
                 newEventName = toTitleCase(eventNameController.text);
                 if (newEventName.isNotEmpty) {
                   await _actualizarEvento(
-                      id, newEventName); // Actualizamos el evento
+                      id, newEventName); 
                 }
-                Navigator.of(context).pop(); // Cerrar el dialog
+                Navigator.of(context).pop(); 
               },
               child: const Text('Guardar'),
             ),
@@ -191,7 +188,7 @@ class ListaEventosState extends State<ListaEventos>
             duration: Duration(seconds: 2),
           ),
         );
-        await _fetchEvents(); // Volver a cargar los eventos
+        await _fetchEvents(); 
       } else {
         throw Exception('Error al editar el evento');
       }
@@ -209,8 +206,8 @@ class ListaEventosState extends State<ListaEventos>
   // Función para invertir el orden de los eventos
   void _invertirOrdenEventos() {
     setState(() {
-      _events = _events.reversed.toList(); // Invertimos el orden de la lista
-      _isAsc = !_isAsc; // Alternamos entre ascendente y descendente
+      _events = _events.reversed.toList();
+      _isAsc = !_isAsc; 
     });
   }
 
@@ -232,7 +229,6 @@ class ListaEventosState extends State<ListaEventos>
 
   @override
   void dispose() {
-    _isDisposing = true;
     if (_controller.isAnimating) {
       _controller.stop();
     }
@@ -242,7 +238,6 @@ class ListaEventosState extends State<ListaEventos>
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Eventos'),
@@ -286,17 +281,6 @@ class ListaEventosState extends State<ListaEventos>
               ? const Center(child: Text('No hay eventos disponibles.'))
               : Column(
                   children: [
-                    const SizedBox(height: 10),
-                    const Padding(
-                      padding:  EdgeInsets.symmetric(horizontal: 10),
-                      child:  Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('Desliza para Editar'),
-                          Text('Desliza para Eliminar'),
-                        ],
-                      ),
-                    ),
                     const SizedBox(height: 10),
                     const Divider(),
                     Expanded(

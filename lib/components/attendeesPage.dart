@@ -20,7 +20,7 @@ class _AttendeesPageState extends State<AttendeesPage>
   List<dynamic> _filteredAttendees = [];
   Dio dio = Dio();
   TextEditingController _searchController = TextEditingController();
-  String _filterOption = 'all'; // Opción de filtro por defecto
+  String _filterOption = 'all';
   late final AnimationController _controller;
 
   @override
@@ -31,8 +31,7 @@ class _AttendeesPageState extends State<AttendeesPage>
 
     _controller = AnimationController(
       vsync: this,
-      duration:
-          const Duration(seconds: 2), // Define la duración de la animación
+      duration: const Duration(seconds: 2),
     );
   }
 
@@ -45,11 +44,9 @@ class _AttendeesPageState extends State<AttendeesPage>
 
   Future<void> _fetchAttendees() async {
     try {
-      // Obtener todos los asistentes
       Response attendeesResponse = await dio.get('$apiUrl/asistentes');
       List<dynamic> attendees = attendeesResponse.data;
 
-      // Obtener la asistencia para el evento actual
       Response attendanceResponse =
           await dio.get('$apiUrl/asistencia/eventos/${widget.eventId}');
       List<String> attendedNames = (attendanceResponse.data as List)
@@ -82,7 +79,6 @@ class _AttendeesPageState extends State<AttendeesPage>
         String name = attendee['name'].toLowerCase();
         bool matchesFilter = true;
 
-        // Aplicar filtro según la opción seleccionada
         if (_filterOption == 'registered') {
           matchesFilter = attendee['isAttended'] == true;
         } else if (_filterOption == 'notRegistered') {
@@ -101,34 +97,31 @@ class _AttendeesPageState extends State<AttendeesPage>
       if (!confirm) return;
       await _eliminarAsistencia(attendeeId);
     } else {
-      // Marcar asistencia
       await _marcarAsistencia(attendeeId, isAttended);
     }
-    _fetchAttendees(); // Recarga la lista después de la acción
+    _fetchAttendees();
   }
 
   Future<void> _marcarAsistencia(int asistenteId, bool isAttended) async {
     try {
       if (isAttended) {
-        // Si el asistente ya está registrado, preguntar si se desea quitar la asistencia
         bool? confirm = await showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
               title: const Text('Quitar Asistencia'),
               content: const Text('¿Seguro que desea quitar la asistencia?'),
-              actions: <Widget>[
+              actions: [
                 TextButton(
                   child: const Text('Cancelar'),
                   onPressed: () {
-                    Navigator.of(context)
-                        .pop(false); // No se quita la asistencia
+                    Navigator.of(context).pop(false);
                   },
                 ),
                 TextButton(
                   child: const Text('Quitar'),
                   onPressed: () {
-                    Navigator.of(context).pop(true); // Se quita la asistencia
+                    Navigator.of(context).pop(true);
                   },
                 ),
               ],
@@ -137,7 +130,6 @@ class _AttendeesPageState extends State<AttendeesPage>
         );
 
         if (confirm == true) {
-          // Llamada a la API para quitar la asistencia
           Response response = await dio
               .delete('$apiUrl/asistencia/${widget.eventId}/$asistenteId');
           if (response.statusCode == 200) {
@@ -223,13 +215,12 @@ class _AttendeesPageState extends State<AttendeesPage>
   void _changeFilter(String option) {
     setState(() {
       _filterOption = option;
-      _filterAttendees(); // Aplicar el filtro cuando cambia la opción
+      _filterAttendees();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Marcar Asistencia'),
@@ -279,8 +270,7 @@ class _AttendeesPageState extends State<AttendeesPage>
                   ),
                   IconButton(
                     icon: const Icon(Icons.close),
-                    onPressed:
-                        _clearSearch, // Limpiar el campo y cerrar el teclado
+                    onPressed: _clearSearch,
                   ),
                 ],
               ),
@@ -288,44 +278,45 @@ class _AttendeesPageState extends State<AttendeesPage>
             const SizedBox(height: 10),
             const Divider(),
             Expanded(
-  child: _filteredAttendees.isEmpty
-      ? const Center(child: CircularProgressIndicator())
-      : SingleChildScrollView(
-          child: Column(
-            children: _filteredAttendees.map((attendee) {
-              return Column(
-                children: [
-                  ListTile(
-                    title: Text('${attendee['name']}'),
-                    trailing: IconButton(
-                      icon: attendee['isAttended']
-                          ? Lottie.asset(
-                              'assets/animations/check.json',
-                              width: 35,
-                              height:35,
-                              controller: _controller,
-                              onLoaded: (c) {
-                                _controller.duration = c.duration;
-                                _controller.forward(); // Inicia la animación cuando se carga
-                              },
-                            )
-                          : const Icon(
-                              Icons.remove_circle_outline,
-                              color: Colors.grey,
-                            ),
-                      onPressed: () {
-                        _toggleAttendance(attendee['id'], attendee['isAttended']);
-                      },
+              child: _filteredAttendees.isEmpty
+                  ? const Center(child: CircularProgressIndicator())
+                  : SingleChildScrollView(
+                      child: Column(
+                        children: _filteredAttendees.map((attendee) {
+                          return Column(
+                            children: [
+                              ListTile(
+                                title: Text('${attendee['name']}'),
+                                trailing: IconButton(
+                                  icon: attendee['isAttended']
+                                      ? Lottie.asset(
+                                          'assets/animations/check.json',
+                                          width: 35,
+                                          height: 35,
+                                          controller: _controller,
+                                          onLoaded: (c) {
+                                            _controller.duration = c.duration;
+                                            _controller
+                                                .forward();
+                                          },
+                                        )
+                                      : const Icon(
+                                          Icons.remove_circle_outline,
+                                          color: Colors.grey,
+                                        ),
+                                  onPressed: () {
+                                    _toggleAttendance(
+                                        attendee['id'], attendee['isAttended']);
+                                  },
+                                ),
+                              ),
+                              const Divider(),
+                            ],
+                          );
+                        }).toList(),
+                      ),
                     ),
-                  ),
-                  const Divider(), // Agrega un Divider después de cada ListTile
-                ],
-              );
-            }).toList(),
-          ),
-        ),
-),
-
+            ),
           ],
         ),
       ),

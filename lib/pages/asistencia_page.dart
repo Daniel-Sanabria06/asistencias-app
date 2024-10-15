@@ -26,7 +26,7 @@ class _AsistenciaPageState extends State<AsistenciaPage> {
       Response response = await dio.get('$apiUrl/eventos');
       if (response.statusCode == 200) {
         setState(() {
-          _events = response.data; // Asignamos los datos recibidos a la lista
+          _events = response.data; 
         });
       } else {
         throw Exception('Error al cargar eventos');
@@ -40,40 +40,52 @@ class _AsistenciaPageState extends State<AsistenciaPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Asistencias por evento', style: TextStyle(fontSize: 25),),
+        title: const Text(
+          'Asistencias por evento',
+          style: TextStyle(fontSize: 22),
+        ),
       ),
       body: _events.isEmpty
           ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: _events.length,
-              itemBuilder: (context, index) {
-                final event = _events[index];
-                return Column(
-                  children: [
-                    Card(
-                      elevation: 5,
-                      child: ListTile(
-                        title: Text(
-                          '${event['name']}',
-                          style: const TextStyle(fontSize: 20),
-                        ),
-                        //subtitle: Text('Id: ${event['id']}'),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  AsistenciaDetallesPage(eventId: event['id'], eventName: event['name']),
+          : Column(
+              children: [
+                const SizedBox(height: 10),
+                const Divider(),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: _events.length,
+                    itemBuilder: (context, index) {
+                      final event = _events[index];
+                      return Column(
+                        children: [
+                          Card(
+                            elevation: 5,
+                            child: ListTile(
+                              title: Text(
+                                '${event['name']}',
+                                style: const TextStyle(fontSize: 20),
+                              ),
+                              trailing: const Icon(Icons.arrow_forward_ios_rounded),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        AsistenciaDetallesPage(
+                                            eventId: event['id'],
+                                            eventName: event['name']),
+                                  ),
+                                );
+                              },
                             ),
-                          );
-                        },
-                        
-                      ),
-                    ),
-                    // const Divider()
-                  ],
-                );
-              },
+                          ),
+                          // const Divider()
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
     );
   }

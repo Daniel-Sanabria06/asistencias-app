@@ -270,15 +270,15 @@ class AsistenteListaState extends State<AsistenteLista> {
               backgroundColor: Colors.blue.shade600,
               child: FadeIn(
                 child: ShakeY(
-                   from: 2,
-                   delay: const Duration(seconds: 1),
-                   duration: const Duration(seconds: 2),
-                   infinite: true,
+                    from: 2,
+                    delay: const Duration(seconds: 1),
+                    duration: const Duration(seconds: 2),
+                    infinite: true,
                     child: const Icon(
-                  Icons.add_circle_outlined,
-                  size: 45,
-                  color: Colors.white,
-                )),
+                      Icons.add_circle_outlined,
+                      size: 45,
+                      color: Colors.white,
+                    )),
               )),
         ),
       ),
@@ -286,22 +286,10 @@ class AsistenteListaState extends State<AsistenteLista> {
         width: size.width * 0.99,
         height: size.height * 0.80,
         child: _attendees.isEmpty
-            ? const Center(
-                child:
-                    CircularProgressIndicator()) // Muestra un loader si no hay asistentes
+            ? const Center(child: CircularProgressIndicator())
             : Column(
                 children: [
                   const SizedBox(height: 10),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Desliza para editar'),
-                        Text('Desliza para eliminar'),
-                      ],
-                    ),
-                  ),
                   const SizedBox(height: 10),
                   const Divider(),
                   SizedBox(
@@ -314,7 +302,7 @@ class AsistenteListaState extends State<AsistenteLista> {
                         return Dismissible(
                           key: Key(attendee['id'].toString()),
                           background: Container(
-                            color: Colors.blue, // Color de fondo para editar
+                            color: Colors.blue,
                             alignment: Alignment.centerLeft,
                             padding: const EdgeInsets.only(left: 20),
                             child: const Icon(
@@ -324,7 +312,7 @@ class AsistenteListaState extends State<AsistenteLista> {
                             ),
                           ),
                           secondaryBackground: Container(
-                            color: Colors.red, // Color de fondo para eliminar
+                            color: Colors.red,
                             alignment: Alignment.centerRight,
                             padding: const EdgeInsets.only(right: 20),
                             child: const Icon(
@@ -335,12 +323,11 @@ class AsistenteListaState extends State<AsistenteLista> {
                           ),
                           onDismissed: (direction) {
                             if (direction == DismissDirection.startToEnd) {
-                              _editarAsistente(
-                                  attendee['id']); // Editar asistente
+                              _editarAsistente(attendee['id']);
                             } else if (direction ==
                                 DismissDirection.endToStart) {
                               _eliminarAsistente(
-                                  attendee['id']); // Eliminar asistente
+                                  attendee['id']);
                             }
                             setState(() {
                               _attendees.removeWhere((attendee) =>
@@ -381,7 +368,6 @@ class AsistenteListaState extends State<AsistenteLista> {
                                 '${attendee['name']}',
                                 style: const TextStyle(fontSize: 25),
                               ),
-                              //subtitle: Text('Id: ${attendee['id']}'),
                             ),
                           ),
                         );

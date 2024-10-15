@@ -28,10 +28,10 @@ class _AsistenciaDetallesPageState extends State<AsistenciaDetallesPage> with Ti
     _controller = AnimationController(
       vsync: this,
       duration:
-          const Duration(seconds: 2), // Define la duración de la animación
+          const Duration(seconds: 2),
     );
 
-    // Establecer un temporizador de 5 segundos para verificar si hay datos
+
     Future.delayed(const Duration(seconds: 5), () {
       if (mounted && _attendances.isEmpty) {
         setState(() {
@@ -49,9 +49,9 @@ class _AsistenciaDetallesPageState extends State<AsistenciaDetallesPage> with Ti
           await dio.get('$apiUrl/asistencia/eventos/${widget.eventId}');
       if (response.statusCode == 200) {
         setState(() {
-          _attendances = response.data; // Asignamos los datos recibidos
-          _loading = false; // Detenemos el indicador de carga
-          _noData = _attendances.isEmpty; // Si no hay datos, mostrar mensaje
+          _attendances = response.data; 
+          _loading = false;
+          _noData = _attendances.isEmpty; 
         });
       } else {
         throw Exception('Error al cargar asistencias');
@@ -95,7 +95,7 @@ class _AsistenciaDetallesPageState extends State<AsistenciaDetallesPage> with Ti
                     const SizedBox(height: 15),
                     SizedBox(
                       width: size.width * 0.99,
-                      height: size.height * 0.8,
+                      height: size.height * 0.7,
                       child: ListView.builder(
                         itemCount: _attendances.length,
                         itemBuilder: (context, index) {
@@ -110,14 +110,13 @@ class _AsistenciaDetallesPageState extends State<AsistenciaDetallesPage> with Ti
                               controller: _controller,
                               onLoaded: (c) {
                                 _controller.duration = c.duration;
-                                _controller.forward(); // Inicia la animación cuando se carga
+                                _controller.forward();
                               },
                             ),
                               title: Text(
                                 '${attendance['asistente_name']}',
                                 style: const TextStyle(fontSize: 20),
                               ),
-                              //   subtitle: Text('Evento: ${attendance['evento_name']}'),
                             ),
                           );
                         },

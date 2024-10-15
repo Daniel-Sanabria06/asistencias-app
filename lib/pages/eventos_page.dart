@@ -9,13 +9,12 @@ class EventosPage extends StatefulWidget {
 }
 
 class _EventosPageState extends State<EventosPage> {
-  final GlobalKey<ListaEventosState> _listaEventosKey = GlobalKey(); // Key para ListaEventos
+  final GlobalKey<ListaEventosState> _listaEventosKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListaEventos(
-          key: _listaEventosKey), // Referencia a la lista de eventos
-    );
+          key: _listaEventosKey),  );
   }
 }
